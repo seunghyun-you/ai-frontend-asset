@@ -1,0 +1,15 @@
+/* Dialog.css */
+.chat-title-enter {
+    opacity: 0;
+}
+.chat-title-enter-active {
+    opacity: 1;
+    transition: opacity 3000ms;
+}
+.chat-title-exit {
+    opacity: 1;
+}
+.chat-title-exit-active {
+    opacity: 0;
+    transition: opacity 300ms;
+}
