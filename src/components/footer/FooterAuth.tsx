@@ -29,10 +29,7 @@ export default function Footer() {
 				{' '}
 				&copy; {new Date().getFullYear()}
 				<Text as='span' fontWeight='500' ms='4px'>
-					© SAMSUNG SDS. All rights reserved.
-					<Link mx='3px' color={textColor} href='https://www.samsungsds.com/' target='_blank' fontWeight='700'>
-						Link
-					</Link>
+					© All rights reserved.
 				</Text>
 			</Text>
 			<List display='flex'>
@@ -41,8 +38,8 @@ export default function Footer() {
 						base: '20px',
 						md: '44px'
 					}}>
-					<Link fontWeight='500' color={linkColor} href='https://support.samsungsds.com/index.html' target='_blank'>
-						Support
+					<Link fontWeight='500' color={linkColor} href='www.linkedin.com/in/sh1517you' target='_blank'>
+						Linkedin
 					</Link>
 				</ListItem>
 				<ListItem
@@ -50,22 +47,13 @@ export default function Footer() {
 						base: '20px',
 						md: '44px'
 					}}>
-					<Link fontWeight='500' color={linkColor} href='https://www.samsungsds.com/kr/etc/license/index.html' target='_blank'>
-						License
+					<Link fontWeight='500' color={linkColor} href='https://github.com/seunghyun-you' target='_blank'>
+						GitHub
 					</Link>
 				</ListItem>
-				{/*<ListItem*/}
-				{/*	me={{*/}
-				{/*		base: '20px',*/}
-				{/*		md: '44px'*/}
-				{/*	}}>*/}
-				{/*	<Link fontWeight='500' color={linkColor} href='https://simmmple.com/terms-of-service'>*/}
-				{/*		Terms of Use*/}
-				{/*	</Link>*/}
-				{/*</ListItem>*/}
 				<ListItem>
-					<Link fontWeight='500' color={linkColor} href='https://www.samsungsds.com/kr/insights/index.html' target='_blank'>
-						Insights Reports
+					<Link fontWeight='500' color={linkColor} href='https://engineer-diarybook.tistory.com/' target='_blank'>
+						BLOG
 					</Link>
 				</ListItem>
 			</List>

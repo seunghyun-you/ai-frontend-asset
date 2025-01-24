@@ -90,7 +90,7 @@ function Dropzone(props: { content: ReactElement  | string; [x: string]: any }) 
 		};
 
 		if (maintenanceId && savedFiles[index].uuid && savedFiles[index].filename) {
-			handleFileDownload(savedFiles[index]).then(_ => undefined)
+			handleFileDownload(savedFiles[index]).then((): void => undefined);
 		}
 	}, [maintenanceId, savedFiles, index]);
 
