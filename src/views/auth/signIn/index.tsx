@@ -44,8 +44,7 @@ import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 // Assets
 import illustration from "assets/img/auth/auth_aj.png";
-import knoxIcon from "assets/img/layout/knox_icon.png";
-import { FcGoogle } from "react-icons/fc";
+import googleIcon from "assets/img/layout/GoogleLogo-canvas-404-300px.original.png"
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
@@ -162,31 +161,6 @@ function SignIn() {
           mx={{ base: "auto", lg: "unset" }}
           me='auto'
           mb={{ base: "20px", md: "auto" }}>
-          <Button
-            fontSize='sm'
-            me='0px'
-            mb='26px'
-            py='15px'
-            h='50px'
-            borderRadius='16px'
-            bg={googleBg}
-            color={googleText}
-            fontWeight='500'
-            _hover={googleHover}
-            _active={googleActive}
-            _focus={googleActive}>
-
-            {/*<Icon as={FcGoogle} w='20px' h='20px' me='10px' />*/}
-            <Image src={knoxIcon} w='25px' h='25px' me='10px' borderRadius='10px' />
-            Sign in with Knox
-          </Button>
-          <Flex align='center' mb='25px'>
-            <HSeparator />
-            <Text color='gray.400' mx='14px'>
-              or
-            </Text>
-            <HSeparator />
-          </Flex>
           <FormControl>
             <FormLabel
               display='flex'
@@ -283,6 +257,31 @@ function SignIn() {
               Sign In
             </Button>
           </FormControl>
+          <Flex align='center' mb='25px'>
+            <HSeparator />
+            <Text color='gray.400' mx='14px'>
+              or
+            </Text>
+            <HSeparator />
+          </Flex>
+          <Button
+            fontSize='sm'
+            me='0px'
+            mb='26px'
+            py='15px'
+            h='50px'
+            borderRadius='16px'
+            bg={googleBg}
+            color={googleText}
+            fontWeight='500'
+            _hover={googleHover}
+            _active={googleActive}
+            _focus={googleActive}>
+
+            {/*<Icon as={FcGoogle} w='20px' h='20px' me='10px' />*/}
+            <Image src={googleIcon} w='25px' h='25px' me='10px' borderRadius='10px' />
+            Sign in with Google
+          </Button>
           <Flex
             flexDirection='column'
             justifyContent='center'
