@@ -20,13 +20,13 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 // Assets
 import { IoMenuOutline } from 'react-icons/io5';
 
-function Sidebar(props: { routes: RoutesType[]; [x: string]: any }) {
+function Sidebar(props: { routes: RoutesType[];[x: string]: any }) {
 	const { routes } = props;
 
 	let variantChange = '0.2s linear';
 	let shadow = useColorModeValue('14px 17px 40px 4px rgba(112, 144, 176, 0.08)', 'unset');
 	// Chakra Color Mode
-	let sidebarBg = useColorModeValue('white', 'navy.800');
+	let sidebarBg = useColorModeValue('gray.800', 'gray.800');
 	let sidebarMargins = '0px';
 
 	// SIDEBAR
@@ -54,16 +54,15 @@ function Sidebar(props: { routes: RoutesType[]; [x: string]: any }) {
 }
 
 // FUNCTIONS
+// Browser 사이즈가 작아 질 때 반응형으로 Side bar를 좌측에 보여주기 위한 기능
+// Navigation Bar에 표시되는 세 개의 줄 아이콘 모양으로 활성화/비활성화 가능
 export function SidebarResponsive(props: { routes: RoutesType[] }) {
-	let sidebarBackgroundColor = useColorModeValue('white', 'navy.800');
+	let sidebarBackgroundColor = useColorModeValue('gray.800', 'gray.800');
 	let menuColor = useColorModeValue('gray.400', 'white');
 	// // SIDEBAR
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const btnRef = React.useRef();
-
 	const { routes } = props;
-	// let isWindows = navigator.platform.startsWith("Win");
-	//  BRAND
+	const btnRef = React.useRef();
 
 	return (
 		<Flex display={{ sm: 'flex', xl: 'none' }} alignItems='center'>

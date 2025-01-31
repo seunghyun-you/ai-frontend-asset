@@ -36,7 +36,7 @@ const routes = [
 		name: 'Chat',
 		layout: '/admin',
 		path: '/chat',
-		icon: <Icon as={MdAutoAwesome} width='20px' height='20px' color='inherit' />,
+		icon: <Icon as={MdAutoAwesome} width='20px' height='20px' color='white' />,
 		component: Chat
 	},
 	{
@@ -44,7 +44,7 @@ const routes = [
 		name: 'Maintenance Details',
 		layout: '/admin',
 		path: '/maintenance/:id',
-		icon: <Icon as={MdEventNote} width='20px' height='20px' color='inherit' />,
+		icon: <Icon as={MdEventNote} width='20px' height='20px' color='white' />,
 		component: MaintenanceDetails
 	},
 	{
@@ -52,7 +52,7 @@ const routes = [
 		name: 'Maintenance',
 		layout: '/admin',
 		path: '/maintenance',
-		icon: <Icon as={MdEventNote} width='20px' height='20px' color='inherit' />,
+		icon: <Icon as={MdEventNote} width='20px' height='20px' color='white' />,
 		component: MaintenanceList
 	},
 	// 미사용 PAGE
