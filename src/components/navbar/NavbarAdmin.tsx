@@ -12,7 +12,7 @@ import {
 	Image,
 	useColorModeValue, Icon, MenuButton, MenuList, MenuItem, Menu, useColorMode, Avatar
 } from '@chakra-ui/react';
-import React, {useState, useEffect, CSSProperties} from 'react';
+import React, { useState, useEffect, CSSProperties } from 'react';
 import AdminNavbarLinks from 'components/navbar/NavbarLinksAdmin';
 
 import claude from 'assets/img/layout/claude-ai-icon.png'
@@ -21,15 +21,15 @@ import chatgpt from 'assets/img/layout/chatgpt-icon.png'
 
 export default function AdminNavbar(props: {
 	secondary: boolean;
-	message: string|boolean;
+	message: string | boolean;
 	brandText: string;
 	logoText: string;
 	fixed: boolean;
 	onOpen: (...args: any[]) => any;
 }) {
-	const [ scrolled, setScrolled ] = useState(false);
-	const [ selectedLLM, setSelectedLLM ] = useState('Claude V3 Haiku');
-	const [ selectedLLMLogo, setSelectedLLMLogo ] = useState(claude);
+	const [scrolled, setScrolled] = useState(false);
+	const [selectedLLM, setSelectedLLM] = useState('Claude V3 Haiku');
+	const [selectedLLMLogo, setSelectedLLMLogo] = useState(claude);
 	const menuColor = useColorModeValue("aliceblue", "blue");
 
 	useEffect(() => {
@@ -40,18 +40,19 @@ export default function AdminNavbar(props: {
 		};
 	});
 
-	const { secondary,  brandText } = props;
+	const { secondary, brandText } = props;
 
 	const selectModelBoxWrapper = {
 		style: {
 			fontSize: '13px',
-			fontWeight: 'bold',} as CSSProperties,
-		mr:"5px",
+			fontWeight: 'bold',
+		} as CSSProperties,
+		mr: "5px",
 		// w: '150px',
 		minW: 'max-content',
 		h: '30px',
-		size:"md",
-		borderRadius:'30px',
+		size: "md",
+		borderRadius: '30px',
 		bg: "black",
 		color: "white",
 		// alignSelf: "end",
@@ -99,7 +100,7 @@ export default function AdminNavbar(props: {
 	let navbarFilter = 'none';
 	let navbarBackdrop = 'blur(20px)';
 	let navbarShadow = 'none';
-	let navbarBg = useColorModeValue('rgba(244, 247, 254, 0.2)', 'rgba(11,20,55,0.5)');
+	let navbarBg = useColorModeValue('rgba(244, 247, 254, 0.2)', 'gray.900');
 	let navbarBorder = 'transparent';
 	let secondaryMargin = '0px';
 	let paddingX = '15px';
@@ -112,7 +113,7 @@ export default function AdminNavbar(props: {
 		}
 	};
 
-	const handleLLMChange = (llm:string) => {
+	const handleLLMChange = (llm: string) => {
 		localStorage.setItem('llm', llm);
 		llm.includes('GPT') ? setSelectedLLMLogo(chatgpt) : setSelectedLLMLogo(claude)
 		setSelectedLLM(llm)
@@ -123,7 +124,7 @@ export default function AdminNavbar(props: {
 		if (llm) {
 			handleLLMChange(llm)
 		} else {
-			const defaultLLM = 'Claude V3 Haiku'
+			const defaultLLM = 'Claude V3.5 Sonnet'
 			localStorage.setItem('llm', defaultLLM)
 			handleLLMChange(defaultLLM)
 		}
@@ -180,36 +181,36 @@ export default function AdminNavbar(props: {
 				alignItems={{ xl: 'center' }}
 				mb={gap}>
 				<Box mb={{ sm: '8px', md: '0px' }}>
-					<Text 
-						color={secondaryText} 
-						fontSize='sm' 
+					<Text
+						color={secondaryText}
+						fontSize='sm'
 						mb='10px'
 					>
 						Pages /
 					</Text>
-					<Text 
-						color={mainText} 
-						fontWeight='bold' 
+					<Text
+						color={mainText}
+						fontWeight='bold'
 						fontSize='34px'
 					>
-						{brandText} 
+						{brandText}
 					</Text>
 				</Box>
-				{ brandText ==='Chat' ? (
+				{brandText === 'Chat' ? (
 					<Menu>
 						<MenuButton {...selectModelBoxWrapper}>
 							<Flex alignItems='center' mx="auto" my="auto">
 								<Image src={selectedLLMLogo} w='15px' h='15px' ml='10px'></Image>
-								<Text  mx='10px'> {selectedLLM} </Text>
+								<Text mx='10px'> {selectedLLM} </Text>
 							</Flex>
 						</MenuButton>
 						<MenuList boxShadow={shadow} p='0px' mt='10px' borderRadius='20px' bg={menuBg} border='none'>
 							<Flex w='100%' mb='0px' flexDirection='row' borderBottom='1px solid'
-								  borderColor={borderColor}>
+								borderColor={borderColor}>
 								<Flex alignItems='center' ml='10px'>
-									<Image 
-										src={claude} 
-										w='25px' 
+									<Image
+										src={claude}
+										w='25px'
 										h='25px'
 										ml='10px'
 										mt='5px'
@@ -223,26 +224,25 @@ export default function AdminNavbar(props: {
 										fontSize='md'
 										fontWeight='700'
 										color={textColor}>
-
 										Anthropic
 									</Text>
 								</Flex>
 							</Flex>
 							<Flex flexDirection='column' p='10px'>
 								<MenuItem bg={menuBg} _hover={{ bg: menuColor }} _focus={{ bg: menuColor }} borderRadius='8px' px='14px'
-										  onClick={() => handleLLMChange('Claude V3 Haiku')}>
+									onClick={() => handleLLMChange('Claude V3 Haiku')}>
 									<Text fontSize='sm'>Claude V3 Haiku</Text>
 								</MenuItem>
 								<MenuItem bg={menuBg} _hover={{ bg: menuColor }} _focus={{ bg: menuColor }} borderRadius='8px' px='14px'
-										  onClick={() => handleLLMChange('Claude V3 Opus')}>
+									onClick={() => handleLLMChange('Claude V3 Opus')}>
 									<Text fontSize='sm'>Claude V3 Opus</Text>
 								</MenuItem>
 								<MenuItem bg={menuBg} _hover={{ bg: menuColor }} _focus={{ bg: menuColor }} borderRadius='8px' px='14px'
-										  onClick={() => handleLLMChange('Claude V3 Sonnet')}>
+									onClick={() => handleLLMChange('Claude V3 Sonnet')}>
 									<Text fontSize='sm'>Claude V3 Sonnet</Text>
 								</MenuItem>
 								<MenuItem bg={menuBg} _hover={{ bg: menuColor }} _focus={{ bg: menuColor }} borderRadius='8px' px='14px'
-										  onClick={() => handleLLMChange('Claude V3.5 Sonnet')}>
+									onClick={() => handleLLMChange('Claude V3.5 Sonnet')}>
 									<Text fontSize='sm'>Claude V3.5 Sonnet</Text>
 								</MenuItem>
 							</Flex>
@@ -280,14 +280,14 @@ export default function AdminNavbar(props: {
 					</Menu>
 				) : null}
 
-				<Box ms='auto' w={{sm: '100%', md: 'unset'}}>
+				<Box ms='auto' w={{ sm: '100%', md: 'unset' }}>
 					<AdminNavbarLinks
-						onOpen={props.onOpen} 
+						onOpen={props.onOpen}
 						secondary={props.secondary}
-						fixed={props.fixed} 
+						fixed={props.fixed}
 					/>
 				</Box>
-			</Flex> 
+			</Flex>
 		</Box>
 	);
 }

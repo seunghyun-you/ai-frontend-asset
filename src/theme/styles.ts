@@ -78,11 +78,13 @@ export const globalStyles = {
 			100: '#FAFCFE'
 		}
 	},
+	// 전역에 설정되는 스타일
+	// 메인 화면 백그라운드 컬러 색상 지정
 	styles: {
 		global: (props: any) => ({
 			body: {
 				overflowX: 'hidden',
-				bg: mode('secondaryGray.300', 'navy.900')(props),
+				bg: mode('white', 'gray.900')(props),
 				fontFamily: 'DM Sans',
 				letterSpacing: '-0.5px'
 			},

@@ -1,8 +1,8 @@
 // chakra imports
 import { Icon, Flex, Text, useColorModeValue } from "@chakra-ui/react";
-import { MdUpgrade } from "react-icons/md"; 
+import { MdUpgrade } from "react-icons/md";
 
-export function ItemContent(props:{info:string}) {
+export function ItemContent(props: { info: string }) {
   const textColor = useColorModeValue("navy.700", "white");
   return (
     <>
@@ -31,7 +31,7 @@ export function ItemContent(props:{info:string}) {
             fontSize={{ base: "sm", md: "sm" }}
             lineHeight='100%'
             color={textColor}>
-              G. ProServ Generative AI Frontend Asset from Samsung SDS.
+            Generative AI Frontend Asset from SeunghyunYOU.
           </Text>
         </Flex>
       </Flex>
