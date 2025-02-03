@@ -18,7 +18,7 @@ import ChatTitle from "./components/ChatTitle";
 import { REACT_APP_API_URL } from "../../config";
 
 export default function Chat() {
-  const borderColor = useColorModeValue("gray.200", "whiteAlpha.200");
+  const borderColor = useColorModeValue("gray.200", "whiteAlpha.400");
   const inputColor = useColorModeValue("navy.700", "white");
 
   const [inputMessage, setInputMessage] = useState<string>("");
@@ -246,12 +246,7 @@ export default function Chat() {
         pb="200px"
       >
         {/* 이전 대화 내용이 없는 최초 접속 시 메인 Chat 화면 구성 */}
-        {!outputMessage ? (
-          <ChatTitle
-            inProp={inProp}
-            handleQuestionClick={handleQuestionClick}
-          />
-        ) : null}
+        {!outputMessage ? ( <ChatTitle inProp={inProp} /> ) : null}
 
         <Flex
           direction="column"
