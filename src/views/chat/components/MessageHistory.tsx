@@ -6,7 +6,6 @@ import { ChatMessage } from "../../../types/types";
 import MessageBoxPerson from "./MessageBoxPerson";
 import MessageBoxIcon from "./MessageBoxIcon";
 import MessageBoxChatHistory from "./MessageBoxHistory";
-import MessageBoxMultiTurn from "./MessageBoxMultiTurn";
 
 interface MessageHistoryProps {
   chatMessages: ChatMessage[];
@@ -15,7 +14,7 @@ interface MessageHistoryProps {
 }
 
 const MessageHistory = React.memo(
-  ({ chatMessages, knowledgeType, scrollBottom, }: MessageHistoryProps) => {
+  ({ chatMessages }: MessageHistoryProps) => {
     const bgColor = useColorModeValue("rgb(240, 240, 255)", "navy.700");
     const brandColor = useColorModeValue("brand.500", "white");
     const inputColor = useColorModeValue("navy.700", "white");
@@ -34,22 +33,6 @@ const MessageHistory = React.memo(
                 bgColor={bgColor}
                 chat={chat.inputMessage}
               />
-            );
-          } else if (chat.type === "multiTurn") {
-            return (
-              <Flex key={index} w="100%" mb="10px">
-                <MessageBoxIcon />
-                <MessageBoxMultiTurn
-                  disabled={true}
-                  inputMessage={chat.inputMessage}
-                  output={chat.multiTurn}
-                  loading={false}
-                  knowledgeType={knowledgeType}
-                  conversationType={chat.conversationType}
-                  handleTranslate={null}
-                  scrollBottom={scrollBottom}
-                />
-              </Flex>
             );
           } else {
             return (

@@ -12,7 +12,6 @@ import { useColorModeValue } from "@chakra-ui/react";
 import MessageInputButton from "./MessageInputButton";
 import ConversationTypeSelector from "./ConversationTypeSelector";
 
-import MessageInputTypeSelector from "./MessageInputTypeSelector"
 import {chatInputWrapper} from "./ChattingStyle";
 
 // typescript 이용 작업할 경우 상위 컴포넌트가 주는 props의 type 지정을 위해 interface 생성
@@ -22,18 +21,10 @@ interface MessageInputProps {
   loading: boolean;
   handleTranslate: (inputMessage: string) => void;
   setConversationType: React.Dispatch<React.SetStateAction<string>>;
-  setEnableMultiTurn: React.Dispatch<React.SetStateAction<boolean>>;
   setKnowledgeType: React.Dispatch<React.SetStateAction<string>>;
   conversationType: string;
-  enableMultiTurn: boolean;
   knowledgeType: string;
-  multiTurnStatus: boolean;
   onHeightChangeHandeler: any;
-  handleQuestionClick: (
-    question: string,
-    conversationType: string,
-    knowledgeType: string
-  ) => void;
 }
 
 // props의 타입을 interface로 지정 'MessageInputProps'
@@ -43,19 +34,12 @@ export default function MessageInput({
   loading,
   handleTranslate,
   setConversationType,
-  setEnableMultiTurn,
   setKnowledgeType,
   conversationType,
-  enableMultiTurn,
-  knowledgeType,
-  multiTurnStatus,
   onHeightChangeHandeler,
-  handleQuestionClick,
 }: MessageInputProps) {
   const placeholderColor = useColorModeValue("gray.400", "whiteAlpha.600");
   const inputAreaBgColor = useColorModeValue("whiteAlpha.700", "navi.800");
-  // const scrollBarTrack = useColorModeValue("#f1f1f1", "navi.800");
-  // const scrollBarThumb = useColorModeValue("whiteAlpha.700", "navi.800");
   const scrollBarHover = useColorModeValue("#f1f1f1", "#555");
   const [textInput, setTextInput] = useState<string>("");
   const textareaRef = useRef(null);
@@ -67,7 +51,6 @@ export default function MessageInput({
       if (textareaRef.current) {
         textareaRef.current.focus();
       }
-
       setTextInput("");
     }
   };
@@ -112,7 +95,7 @@ export default function MessageInput({
             ref={textareaRef}
             value={textInput}
             backgroundColor={inputAreaBgColor}
-            isDisabled={loading || multiTurnStatus}
+            isDisabled={loading}
             _disabled={{
               opacity: 0.6,
               filter: "blur(1px)",
@@ -174,15 +157,7 @@ export default function MessageInput({
               >
                 <ConversationTypeSelector
                   setConversationType={setConversationType}
-                  multiTurnStatus={multiTurnStatus}
                 />
-                {conversationType === "knowledge" ? (
-                  <MessageInputTypeSelector
-                    setEnableMultiTurn={setEnableMultiTurn}
-                    setKnowledgeType={setKnowledgeType}
-                    multiTurnStatus={multiTurnStatus}
-                  />
-                ) : null}
               </Flex>
               <Flex
                 direction="row"

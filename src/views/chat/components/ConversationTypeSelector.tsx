@@ -22,12 +22,10 @@ import { buttonWrapper } from "./ChattingStyle";
 
 interface MessageInputButtonProps {
   setConversationType: React.Dispatch<React.SetStateAction<string>>;
-  multiTurnStatus: boolean;
 }
 
 export default function ConversationTypeSelectionButton({
   setConversationType,
-  multiTurnStatus,
 }: MessageInputButtonProps) {
   let menuBg = useColorModeValue("white", "navy.800");
   const menuColor = useColorModeValue("aliceblue", "blue");
@@ -44,7 +42,6 @@ export default function ConversationTypeSelectionButton({
         >
           <MenuButton
             {...buttonWrapper}
-            disabled={multiTurnStatus}
             _disabled={{
               opacity: 0.6,
               filter: "blur(1px)",
@@ -83,25 +80,10 @@ export default function ConversationTypeSelectionButton({
               </MenuItem>
             </Tooltip>
             <MenuDivider />
-            {/* <Tooltip label={<span>인터넷 정보 검색 결과를<br /> 기반으로 답변합니다.</span>} aria-label="A tooltip" hasArrow placement='left'>
-              <MenuItem
-                onClick={() => setConversationType("external")}
-                minH="40px"
-                bg={menuBg} _hover={{ bg: menuColor }} _focus={{ bg: menuColor }} borderRadius='8px'
-              >
-                <Icon as={TbWorldSearch} boxSize="2rem" mr="12px" />
-                <Box pl={1.5}>
-                  <Text fontWeight="bold">인터넷 검색</Text>
-                  <Text fontSize="sm" color={lightGray}>External Search Conversation</Text>
-                </Box>
-              </MenuItem>
-            </Tooltip>
-            <MenuDivider /> */}
             <Tooltip
               label={
                 <span>
-                  사내 문서 검색 결과를
-                  <br /> 기반으로 답변합니다.
+                  기능 개발 중 입니다.
                 </span>
               }
               aria-label="A tooltip"
@@ -118,9 +100,9 @@ export default function ConversationTypeSelectionButton({
               >
                 <Icon as={TbReportSearch} boxSize="2rem" mr="12px" />
                 <Box pl={1.5}>
-                  <Text fontWeight="bold">사내 정보 검색</Text>
+                  <Text fontWeight="bold">문서 유사도 검색</Text>
                   <Text fontSize="sm" color={lightGray}>
-                    Knowledge Base Conversation
+                    Retrieval Base Conversation
                   </Text>
                 </Box>
               </MenuItem>

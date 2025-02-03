@@ -5,17 +5,32 @@ import cloneDeep from "lodash/cloneDeep";
 
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
-import { ChatMessage, ChatRequest, MultiTurn } from "types/types";
+import { ChatMessage, ChatRequest } from "types/types";
 import { mainBoxWrapper, ContainerWrapper } from "./components/ChattingStyle";
 
 import MessageBox from "./components/MessageBox";
-import MessageBoxMultiTurn from "./components/MessageBoxMultiTurn";
 import MessageInputBar from "./components/MessageInputBar";
 import MessageBoxIcon from "./components/MessageBoxIcon";
 import MessageHistory from "./components/MessageHistory";
 import ChatTitle from "./components/ChatTitle";
 
 import { REACT_APP_API_URL } from "../../config";
+
+
+const getBackendUrl = (conversationType: string) => {
+  if (conversationType === "retrieval") {
+    return `${REACT_APP_API_URL}/bedrock/chat/retrieval`
+  } 
+  else if (conversationType === "agent") {
+    return `${REACT_APP_API_URL}/bedrock/chat/agent`
+  }
+  else if (conversationType === "web_search") {
+    return `${REACT_APP_API_URL}/bedrock/chat/web_search`
+  }
+  else return `${REACT_APP_API_URL}/bedrock/chat`;
+};
+
+const source_documents_delimiter = "[#source_documents_delimiter#]";
 
 export default function Chat() {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.400");
@@ -24,24 +39,19 @@ export default function Chat() {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [inputMessageArr, setInputMessageArr] = useState<unknown[]>([]);
   const [outputMessage, setOutputMessage] = useState<string>("");
-  const [outputMultiTurn, setOutputMultiTurn] = useState<MultiTurn>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [sourceDocuments, setSourceDocuments] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [inProp, setInProp] = useState<boolean>(false);
   const [sessionId] = useState<string>(uuidV4());
   const [conversationType, setConversationType] = useState<string>("knowledge");
-  const [currentConversationType, setCurrentConversationType] =
-    useState<string>("knowledge");
+  const [currentConversationType, setCurrentConversationType] = useState<string>("knowledge");
   const [knowledgeType, setKnowledgeType] = useState<string>("manual");
-  const [multiTurn, setMultiTurn] = useState<boolean>(true);
-  const [enableMultiTurn, setEnableMultiTurn] = useState<boolean>(true);
   const [hooking, setHooking] = useState<boolean>(false);
 
   const handleTranslate = async (
     _inputMessage: string = inputMessage,
     _conversationType: string = conversationType,
-    _multiTurn?: MultiTurn
   ) => {
     if (!_inputMessage) {
       alert("Please enter your message.");
@@ -49,38 +59,21 @@ export default function Chat() {
     }
 
     if (outputMessage.length > 1) {
-      const chatMessage: ChatMessage = {
-        outputMessage: cloneDeep(outputMessage),
+      const aiMessage: ChatMessage = {
         type: "ai",
+        outputMessage: cloneDeep(outputMessage),
         sourceDocuments: cloneDeep(sourceDocuments),
         conversationType: cloneDeep(currentConversationType),
       };
-      setChatMessages((prevMessages) => [...prevMessages, chatMessage]);
+      setChatMessages((prevMessages) => [...prevMessages, aiMessage]);
     }
-
-    if (outputMultiTurn) {
-      const chatMessage: ChatMessage = {
-        inputMessage: cloneDeep(inputMessage),
-        multiTurn: _multiTurn
-          ? cloneDeep(_multiTurn)
-          : cloneDeep(outputMultiTurn),
-        type: "multiTurn",
-        sourceDocuments: cloneDeep(sourceDocuments),
-        conversationType: cloneDeep(currentConversationType),
-      };
-      setChatMessages((prevMessages) => [...prevMessages, chatMessage]);
-    }
-
-    if (!_multiTurn) {
-      const chatMessage: ChatMessage = {
-        inputMessage: cloneDeep(_inputMessage),
-        type: "user",
-      };
-      setChatMessages((prevMessages) => [...prevMessages, chatMessage]);
-    }
+    const userMessage: ChatMessage = {
+      inputMessage: cloneDeep(_inputMessage),
+      type: "user",
+    };
+    setChatMessages((prevMessages) => [...prevMessages, userMessage]);
 
     setOutputMessage(" ");
-    setOutputMultiTurn(null);
     setSourceDocuments(null);
     setCurrentConversationType(_conversationType);
     setConversationType(_conversationType);
@@ -95,22 +88,11 @@ export default function Chat() {
       knowledge_type: knowledgeType,
       llm: localStorage.getItem("llm"),
       session_id: sessionId,
-      multi_turn: _multiTurn,
     };
 
     try {
-      const getUrl = () => {
-        if (_conversationType === "knowledge") {
-          return enableMultiTurn
-            ? `${REACT_APP_API_URL}/bedrock/chat/multi-turn`
-            : `${REACT_APP_API_URL}/bedrock/chat`;
-        } else if (_conversationType === "external") {
-          return `http://poc-genai-alb-app-server-1997415878.ap-northeast-2.elb.amazonaws.com/bedrock/chat`;
-        }
-        return `${REACT_APP_API_URL}/bedrock/chat`;
-      };
-
-      const response = await fetch(getUrl(), {
+      const backendUrl = getBackendUrl(_conversationType)
+      const response = await fetch(backendUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,44 +110,34 @@ export default function Chat() {
 
       setLoading(true);
 
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.includes("application/json")) {
-        response.json().then((value) => {
-          setOutputMultiTurn(value);
-          setMultiTurn(true);
-        });
-      } else {
-        let done = false;
-        let isSourceDocuments = true;
+      let done = false;
+      let isSourceDocuments = true;
+      let streamingSourceDocuments = "";
 
-        const source_documents_delimiter = "[#source_documents_delimiter#]";
-        let streamingSourceDocuments = "";
+      const reader = data.getReader();
+      const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
 
-        const reader = data.getReader();
-        const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
-        while (!done) {
-          const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        let chunkValue = decoder.decode(value);
 
-          done = doneReading;
-          let chunkValue = decoder.decode(value);
-
-          if (isSourceDocuments) {
-            const mixValues = chunkValue.split(source_documents_delimiter);
-            if (mixValues.length > 1) {
-              streamingSourceDocuments += mixValues[0];
-              setSourceDocuments(
-                JSON.parse(streamingSourceDocuments)["source_documents"]
-              );
-              chunkValue = mixValues[1];
-              isSourceDocuments = false;
-            } else {
-              streamingSourceDocuments += chunkValue;
-            }
+        if (isSourceDocuments) {
+          const mixValues = chunkValue.split(source_documents_delimiter);
+          if (mixValues.length > 1) {
+            streamingSourceDocuments += mixValues[0];
+            setSourceDocuments(
+              JSON.parse(streamingSourceDocuments)["source_documents"]
+            );
+            chunkValue = mixValues[1];
+            isSourceDocuments = false;
+          } else {
+            streamingSourceDocuments += chunkValue;
           }
+        }
 
-          if (!isSourceDocuments || _conversationType === "general") {
-            setOutputMessage((prevCode) => prevCode + chunkValue);
-          }
+        if (!isSourceDocuments || _conversationType === "general") {
+          setOutputMessage((prevCode) => prevCode + chunkValue);
         }
       }
     } catch (e) {
@@ -175,25 +147,9 @@ export default function Chat() {
     setLoading(false);
   };
 
-  // Main 화면 Title Button event handler
-  const handleQuestionClick = (
-    _question: string,
-    _conversationType: string,
-    _knowledgeType: string
-  ) => {
-    setHooking(true);
-    setMultiTurn(true);
-    setEnableMultiTurn(true);
-    setInputMessage(_question);
-    setInputMessageArr([_question]);
-    setConversationType(_conversationType);
-    setCurrentConversationType(_conversationType);
-    setKnowledgeType(_knowledgeType);
-  };
-
   useEffect(() => {
     if (hooking) {
-      handleTranslate(inputMessage, conversationType, null);
+      handleTranslate(inputMessage, conversationType);
       setHooking(false);
     }
   }, [inputMessageArr]);
@@ -206,9 +162,7 @@ export default function Chat() {
     chatMessages,
     outputMessage,
     chatContainerRef.current,
-    loading,
-    outputMultiTurn,
-    multiTurn,
+    loading
   ]);
 
   const scrollBottom = () => {
@@ -223,7 +177,7 @@ export default function Chat() {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [outputMessage, outputMultiTurn]);
+  }, [outputMessage]);
 
   // 사용자가 채팅 창에 텍스트를 많이 입력하여 채팅 박스의 사이즈가 커질 수록
   // Message Box의 크기를 그만큼 줄이는 코드
@@ -246,6 +200,7 @@ export default function Chat() {
         pb="200px"
       >
         {/* 이전 대화 내용이 없는 최초 접속 시 메인 Chat 화면 구성 */}
+        {/* 대화가 시작되면 ChatTitle 컴포넌트는 사라지고 아래의 채팅 메세지 기록들 표시 */}
         {!outputMessage ? ( <ChatTitle inProp={inProp} /> ) : null}
 
         <Flex
@@ -264,26 +219,13 @@ export default function Chat() {
           {/* 마지막 질문에 대한 LLM 답변을 화면에 뿌리는 코드 */}
           <Flex w="100%">
             <MessageBoxIcon />
-            {multiTurn && outputMultiTurn ? (
-              <MessageBoxMultiTurn
-                disabled={false}
-                inputMessage={inputMessage}
-                output={outputMultiTurn}
-                loading={false}
-                knowledgeType={knowledgeType}
-                conversationType={currentConversationType}
-                handleTranslate={handleTranslate}
-                scrollBottom={scrollBottom}
-              />
-            ) : (
-              <MessageBox
+            <MessageBox
                 output={outputMessage}
                 sourceDocuments={sourceDocuments}
                 loading={loading}
                 conversationType={currentConversationType}
                 handleTranslate={handleTranslate}
-              />
-            )}
+            />
           </Flex>
         </Flex>
       </Flex>
@@ -294,14 +236,10 @@ export default function Chat() {
         handleTranslate={handleTranslate}
         loading={loading}
         setConversationType={setConversationType}
-        setEnableMultiTurn={setEnableMultiTurn}
         setKnowledgeType={setKnowledgeType}
         conversationType={conversationType}
-        enableMultiTurn={enableMultiTurn}
         knowledgeType={knowledgeType}
         onHeightChangeHandeler={handleHeightChange}
-        multiTurnStatus={Boolean(multiTurn && outputMultiTurn)}
-        handleQuestionClick={handleQuestionClick}
       />
     </Flex>
   );
