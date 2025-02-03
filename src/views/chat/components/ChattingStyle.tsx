@@ -62,6 +62,9 @@ export const mainTitleWrapper: FlexProps = {
   mx: "auto",
   mb: "auto",
   mt: '50px',
+  h: "50vh",
+  alignItems: 'center',
+  justifyContent: 'center',
 };
 
 export const SubmitButtonStyle = {
