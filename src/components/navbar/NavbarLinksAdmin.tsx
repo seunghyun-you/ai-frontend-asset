@@ -75,7 +75,7 @@ export default function HeaderLinks(props: { secondary: boolean }) {
           h="18px"
           w="18px"
           color={navbarIcon}
-          as={colorMode === "light" ? IoMdMoon : IoMdSunny}
+          as={colorMode === "light" ? IoMdSunny : IoMdMoon}
         />
       </Button>
 
