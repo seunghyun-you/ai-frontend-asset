@@ -11,12 +11,11 @@ import {
   Box,
   Text,
 } from "@chakra-ui/react";
-import { PiChatsCircleBold } from "react-icons/pi";
+import { useColorModeValue } from "@chakra-ui/react";
 
+import { PiChatsCircleBold } from "react-icons/pi";
 import { TbMessageSearch } from "react-icons/tb";
 import { TbReportSearch } from "react-icons/tb";
-
-import { useColorModeValue } from "@chakra-ui/react";
 
 import { buttonWrapper } from "./ChattingStyle";
 
