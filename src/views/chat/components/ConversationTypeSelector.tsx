@@ -80,11 +80,7 @@ export default function ConversationTypeSelectionButton({
             </Tooltip>
             <MenuDivider />
             <Tooltip
-              label={
-                <span>
-                  기능 개발 중 입니다.
-                </span>
-              }
+              label={<span>기능 개발 중 입니다.</span>}
               aria-label="A tooltip"
               hasArrow
               placement="left"
