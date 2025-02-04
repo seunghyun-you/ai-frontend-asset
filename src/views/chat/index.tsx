@@ -37,17 +37,15 @@ export default function Chat() {
   const inputColor = useColorModeValue("navy.700", "white");
 
   const [inputMessage, setInputMessage] = useState<string>("");
-  const [inputMessageArr, setInputMessageArr] = useState<unknown[]>([]);
   const [outputMessage, setOutputMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [sourceDocuments, setSourceDocuments] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [inProp, setInProp] = useState<boolean>(false);
   const [sessionId] = useState<string>(uuidV4());
-  const [conversationType, setConversationType] = useState<string>("knowledge");
-  const [currentConversationType, setCurrentConversationType] = useState<string>("knowledge");
-  const [knowledgeType, setKnowledgeType] = useState<string>("manual");
-  const [hooking, setHooking] = useState<boolean>(false);
+  const [conversationType, setConversationType] = useState<string>("general");
+  const [currentConversationType, setCurrentConversationType] = useState<string>("general");
+  const [knowledgeType, setKnowledgeType] = useState<string>("manual"); 
 
   const handleTranslate = async (
     _inputMessage: string = inputMessage,
@@ -136,9 +134,10 @@ export default function Chat() {
           }
         }
 
-        if (!isSourceDocuments || _conversationType === "general") {
-          setOutputMessage((prevCode) => prevCode + chunkValue);
-        }
+        // if (!isSourceDocuments || _conversationType === "general") {
+        //   setOutputMessage((prevCode) => prevCode + chunkValue);
+        // }
+        setOutputMessage((prevCode) => prevCode + chunkValue);
       }
     } catch (e) {
       alert(e);
@@ -147,12 +146,12 @@ export default function Chat() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (hooking) {
-      handleTranslate(inputMessage, conversationType);
-      setHooking(false);
-    }
-  }, [inputMessageArr]);
+  // useEffect(() => {
+  //   if (hooking) {
+  //     handleTranslate(inputMessage, conversationType);
+  //     setHooking(false);
+  //   }
+  // }, [inputMessageArr]);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {

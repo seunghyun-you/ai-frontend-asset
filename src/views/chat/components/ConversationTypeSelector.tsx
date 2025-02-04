@@ -86,7 +86,7 @@ export default function ConversationTypeSelectionButton({
               placement="left"
             >
               <MenuItem
-                onClick={() => setConversationType("knowledge")}
+                onClick={() => setConversationType("retrieval")}
                 minH="40px"
                 bg={menuBg}
                 _hover={{ bg: menuColor }}
