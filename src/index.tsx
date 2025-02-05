@@ -18,15 +18,14 @@ const PrivateRoute = ({ component: Component, ...rest }: {
 	exact?: boolean;
 }) => {
 	const token = sessionStorage.getItem('token');
-
 	const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(true);
 
 	React.useEffect(() => {
 		const checkAuth = async () => {
-			const data = await handleAuth(token);
-			sessionStorage.setItem('username', data);
-			setIsAuthenticated(data);
+			const username = await handleAuth(token);
+			sessionStorage.setItem('username', username);
+			setIsAuthenticated(username);
 			setIsLoading(false);
 		};
 		checkAuth();
@@ -48,8 +47,6 @@ const PrivateRoute = ({ component: Component, ...rest }: {
 				/>
 			</Flex>
 		)
-
-
 	}
 
 	return (
