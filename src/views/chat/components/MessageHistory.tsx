@@ -37,7 +37,7 @@ const MessageHistory = React.memo(
           } else {
             return (
               <Flex key={index} w="100%" mb="10px">
-                <MessageBoxIcon  mt="10px" />
+                <MessageBoxIcon  mt="13px" />
                 <MessageBoxChatHistory
                   output={chat.outputMessage}
                   sourceDocuments={chat.sourceDocuments}

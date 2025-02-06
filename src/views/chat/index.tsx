@@ -208,7 +208,7 @@ export default function Chat() {
           />
           {/* 마지막 질문에 대한 LLM 답변을 화면에 뿌리는 코드 */}
           <Flex w="100%">
-            <MessageBoxIcon mt="10px" />
+            <MessageBoxIcon mt="13px" />
             <MessageBox
                 output={outputMessage}
                 sourceDocuments={sourceDocuments}
