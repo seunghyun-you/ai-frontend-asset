@@ -13,9 +13,6 @@ import {
 } from "@chakra-ui/react";
 
 import { HSeparator } from "../../../components/separator/Separator";
-import { SavedFile } from "../../../types/types";
-import noImage from "assets/img/no_image.png";
-import PDFsymbol from "assets/img/chat/PDF_SYMBOL.png";
 import Card from "components/card/Card";
 
 import { CSSTransition } from "react-transition-group";
@@ -25,13 +22,9 @@ import {
   MdOutlineReplay,
 } from "react-icons/md";
 
-import MaintenanceSourceDocument from "./MaintenanceSourceDocument";
 import MessageBoxMarkDown from "./MessageBoxMarkDown";
-import { createThumbnailUrl, getThumbnailUrl } from "./ThumbnailCache";
 import { copyToClipboard } from "./MessageUtils";
 import { AnswerUtilIconWrapper } from "./ChattingStyle";
-
-import { REACT_APP_API_URL } from "../../../config";
 
 interface MessageBoxProps {
   output: string;
@@ -50,139 +43,10 @@ export default function MessageBox({
 }: MessageBoxProps) {
   const nodeRef = React.useRef(null);
   const textColor = useColorModeValue("navy.700", "white");
-  const bg = useColorModeValue("white", "navy.700");
-  const titleColor = useColorModeValue("black.600", "black.600");
-  const brandColor = useColorModeValue("brand.500", "white");
   const [components, setComponents] = useState<React.ReactNode[]>([]);
 
   useEffect(() => {
-    if (Array.isArray(sourceDocuments)) {
-      Promise.all(
-        sourceDocuments.map(async (sourceDocument: any, index: number) => {
-          const pageContentMatch = sourceDocument.match(
-            /page_content='([^']*)'/
-          );
-          const pageContent = pageContentMatch ? pageContentMatch[1] : null;
-
-          const metadataMatch = sourceDocument.match(/metadata=({[^}]*})/);
-          const metadataStr = metadataMatch ? metadataMatch[1] : null;
-          const metadata = metadataStr
-            ? JSON.parse(metadataStr.replace(/'/g, '"'))
-            : null;
-
-          let image = noImage;
-
-          if ("knowledge_type" in metadata) {
-            if (metadata.knowledge_type === "maintenance") {
-              const uuid = metadata.uuid[0];
-              const filename = metadata.filename[0];
-
-              if (uuid && filename) {
-                const cachedUrl = getThumbnailUrl(uuid);
-                if (cachedUrl) {
-                  image = cachedUrl;
-                } else {
-                  const savedFile: SavedFile = {
-                    uuid: uuid,
-                    filename: filename,
-                  };
-
-                  let imageFile = await handleFileDownload(savedFile);
-
-                  if (imageFile) {
-                    image = URL.createObjectURL(imageFile);
-                    createThumbnailUrl(image, uuid);
-                  }
-                }
-              }
-              return (
-                <MaintenanceSourceDocument
-                  key={index}
-                  boxShadow="0px 18px 40px rgba(112, 144, 176, 0.08)"
-                  mb="5px"
-                  image={image ? image : null}
-                  ranking={(index + 1).toString()}
-                  link={`${window.location.origin}/#/admin/maintenance/${metadata.id}`}
-                  w="98%"
-                  abnormalPart="엔진"
-                  abnormalSymptom={truncatePageContent(
-                    metadata.abnormal_symptom,
-                    20
-                  )}
-                  abnormalSymptomDetails={truncatePageContent(
-                    metadata.action_details,
-                    150
-                  )}
-                />
-              );
-            }
-            if (
-              metadata.knowledge_type === "manual" ||
-              metadata.knowledge_type === "parts_book"
-            ) {
-              return (
-                <Card
-                  bg={bg}
-                  w="24%"
-                  p="14px"
-                  boxShadow="0px 18px 40px rgba(112, 144, 176, 0.08)"
-                  mb="5px"
-                >
-                  <Flex align="flex-start" direction="column">
-                    <Flex align="center">
-                      <Image
-                        h="15px"
-                        w="15px"
-                        src={PDFsymbol}
-                        borderRadius="none"
-                        me="7px"
-                      />
-                      <Text
-                        color={"gray.400"}
-                        fontSize="15px"
-                        fontWeight="500"
-                        mr={3}
-                      >
-                        PDF
-                      </Text>
-                    </Flex>
-                    <Text fontWeight="700" color={titleColor} fontSize="15px">
-                      {metadata.title}
-                    </Text>
-                    <Link
-                      color={brandColor}
-                      fontWeight="500"
-                      fontSize="14px"
-                      noOfLines={1}
-                      onClick={() =>
-                        window.open(
-                          `https://aj-genai-bucket-preprocessing.s3.ap-northeast-2.amazonaws.com/origianal_document/${metadata.file_name}#page=${metadata.page_number}`,
-                          "_blank"
-                        )
-                      }
-                    >
-                      [Link] {metadata.knowledge_type.toUpperCase()} (
-                      {metadata.page_number}P)
-                    </Link>
-                    <Text
-                      fontWeight="400"
-                      color={"gray.400"}
-                      fontSize="14px"
-                      me="4px"
-                      noOfLines={1}
-                    >
-                      [Model] {metadata.model_name}
-                    </Text>
-                  </Flex>
-                </Card>
-              );
-            }
-          }
-        })
-      ).then((components) => {
-        setComponents(components);
-      });
-    } else if (typeof sourceDocuments === "string") {
+    if (typeof sourceDocuments === "string") {
       Promise.all(
         sourceDocuments.split("], [").map((item: any, index: number) => {
           const titleAndLink = item.split("title:")[1];
@@ -208,40 +72,8 @@ export default function MessageBox({
     }
   }, [sourceDocuments]);
 
-  const handleFileDownload = async (savedFile: SavedFile) => {
-    if (savedFile) {
-      try {
-        const response = await fetch(
-          `${REACT_APP_API_URL}/maintenances/1/files/download`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(savedFile),
-          }
-        );
-
-        if (response.ok) {
-          const blob = await response.blob();
-          return new File([blob], savedFile.filename);
-        } else {
-          return null;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
   const retryInputMessage = () => {
     handleTranslate();
-  };
-
-  const truncatePageContent = (pageContents: string, n: number) => {
-    return pageContents.length > n
-      ? pageContents.substring(0, n - 1) + "..."
-      : pageContents;
   };
 
   const handleConversationTypeText = () => {

@@ -146,37 +146,28 @@ export default function Chat() {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   if (hooking) {
-  //     handleTranslate(inputMessage, conversationType);
-  //     setHooking(false);
-  //   }
-  // }, [inputMessageArr]);
+  const isScrolledToBottom = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      return scrollTop + clientHeight >= scrollHeight - 20;
+    }
+    else return false;
+  };
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // if (isScrolledToBottom()) {
+    //   scrollBottom();
+    // }
     scrollBottom();
     setInProp(true);
-  }, [
-    chatMessages,
-    outputMessage,
-    chatContainerRef.current,
-    loading
-  ]);
+  }, [chatMessages, outputMessage,loading]);
 
   const scrollBottom = () => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   };
-
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [outputMessage]);
 
   // 사용자가 채팅 창에 텍스트를 많이 입력하여 채팅 박스의 사이즈가 커질 수록
   // Message Box의 크기를 그만큼 줄이는 코드
@@ -217,7 +208,7 @@ export default function Chat() {
           />
           {/* 마지막 질문에 대한 LLM 답변을 화면에 뿌리는 코드 */}
           <Flex w="100%">
-            <MessageBoxIcon />
+            <MessageBoxIcon mt="10px" />
             <MessageBox
                 output={outputMessage}
                 sourceDocuments={sourceDocuments}
