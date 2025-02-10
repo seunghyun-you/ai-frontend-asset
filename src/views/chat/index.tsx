@@ -42,10 +42,13 @@ export default function Chat() {
   const [sourceDocuments, setSourceDocuments] = useState<any>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [inProp, setInProp] = useState<boolean>(false);
-  const [sessionId] = useState<string>(uuidV4());
   const [conversationType, setConversationType] = useState<string>("general");
   const [currentConversationType, setCurrentConversationType] = useState<string>("general");
   const [knowledgeType, setKnowledgeType] = useState<string>("manual"); 
+  const [sessionId] = useState<string>(uuidV4());
+  const [messageId, setMessageId] = useState<number | null>(null);
+  const [chatRoomId, setChatRoomId] = useState<string | null>(null);
+  // const [chatRoomExist, setChatRoomExist] = useState<boolean | null>(null);
 
   const handleTranslate = async (
     _inputMessage: string = inputMessage,
@@ -66,11 +69,11 @@ export default function Chat() {
       setChatMessages((prevMessages) => [...prevMessages, aiMessage]);
     }
     const userMessage: ChatMessage = {
-      inputMessage: cloneDeep(_inputMessage),
       type: "user",
+      inputMessage: cloneDeep(_inputMessage),
     };
-    setChatMessages((prevMessages) => [...prevMessages, userMessage]);
 
+    setChatMessages((prevMessages) => [...prevMessages, userMessage]);
     setOutputMessage(" ");
     setSourceDocuments(null);
     setCurrentConversationType(_conversationType);
@@ -79,13 +82,14 @@ export default function Chat() {
     setLoading(true);
 
     let chatRequest: ChatRequest = {
-      connection_id: "test",
-      message_id: "test",
+      llm: localStorage.getItem("llm"),
       message: _inputMessage,
       conversation_type: _conversationType,
-      knowledge_type: knowledgeType,
-      llm: localStorage.getItem("llm"),
+      user_id: sessionStorage.getItem("user_id"),
+      message_id: messageId,
       session_id: sessionId,
+      chat_room_id: chatRoomId,
+      // chat_room_exist: chatRoomExist,
     };
 
     try {
@@ -103,20 +107,16 @@ export default function Chat() {
         alert("Something went wrong");
         return;
       }
-
-      const data = response.body;
-
       setLoading(true);
 
       let done = false;
       let isSourceDocuments = true;
       let streamingSourceDocuments = "";
 
-      const reader = data.getReader();
+      const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8", { ignoreBOM: true });
       while (!done) {
         const { value, done: doneReading } = await reader.read();
-
         done = doneReading;
         let chunkValue = decoder.decode(value);
 
@@ -134,11 +134,9 @@ export default function Chat() {
           }
         }
 
-        // if (!isSourceDocuments || _conversationType === "general") {
-        //   setOutputMessage((prevCode) => prevCode + chunkValue);
-        // }
         setOutputMessage((prevCode) => prevCode + chunkValue);
       }
+      setMessageId((prevId) => prevId + 1);
     } catch (e) {
       alert(e);
     }
@@ -146,19 +144,22 @@ export default function Chat() {
     setLoading(false);
   };
 
-  const isScrolledToBottom = () => {
-    if (chatContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      return scrollTop + clientHeight >= scrollHeight - 20;
-    }
-    else return false;
-  };
+  // 새 채팅룸 생성 버튼과 연동해서 hook로 등록
+  // chatRoonId uuid 값 초기화 
+  // messageId 값 1로 초기화
+  useEffect(() => {
+    setChatRoomId(uuidV4());
+    // setChatRoomExist(false);
+    setMessageId(1);
+  }, []); 
+
+  useEffect(() => {
+    sessionStorage.setItem('chat_room_id', chatRoomId)
+    // sessionStorage.setItem('message_id', messageId.toString())
+  }, [chatRoomId]);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    // if (isScrolledToBottom()) {
-    //   scrollBottom();
-    // }
     scrollBottom();
     setInProp(true);
   }, [chatMessages, outputMessage,loading]);

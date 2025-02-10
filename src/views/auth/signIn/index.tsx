@@ -100,6 +100,7 @@ function SignIn() {
       if (response.ok) {
         const data = await response.json();
         sessionStorage.setItem('token', data.access_token);
+        sessionStorage.setItem('user_id', data.user_id);
         window.location.href = '/';
       } else {
         console.error('Login failed. Please check your credentials.');

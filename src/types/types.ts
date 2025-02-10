@@ -7,11 +7,12 @@ export interface ChatMessage {
 }
 
 export interface ChatRequest {
-  connection_id: string;
-  message_id: string;
+  llm: string;
   message: string;
   conversation_type: string;
-  knowledge_type?: string;
-  llm: string;
+  user_id: string;
   session_id: string;
+  message_id: number;
+  chat_room_id: string;
+  // chat_room_exist: boolean;
 }
