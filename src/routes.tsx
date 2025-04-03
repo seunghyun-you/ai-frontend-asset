@@ -7,6 +7,7 @@ import {
 // Auth Imports
 import SignInCentered from 'views/auth/signIn';
 import Chat from 'views/chat';
+import ChatHistory from 'views/chatHistory';
 
 const routes = [
 	// 사용 PAGE
@@ -24,6 +25,13 @@ const routes = [
 		path: '/chat',
 		icon: <Icon as={MdAutoAwesome} width='20px' height='20px' color='white' />,
 		component: Chat
+	},
+	{
+		name: 'Chat History',
+		layout: '/admin',
+		path: '/history',
+		icon: <Icon as={MdAutoAwesome} width='20px' height='20px' color='white' />,
+		component: ChatHistory
 	}
 ];
 

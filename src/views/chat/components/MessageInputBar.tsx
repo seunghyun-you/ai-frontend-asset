@@ -12,7 +12,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 import MessageInputButton from "./MessageInputButton";
 import ConversationTypeSelector from "./ConversationTypeSelector";
 
-import {chatInputWrapper} from "./ChattingStyle";
+import { chatInputWrapper } from "./ChattingStyle";
 
 // typescript 이용 작업할 경우 상위 컴포넌트가 주는 props의 type 지정을 위해 interface 생성
 interface MessageInputProps {
@@ -77,13 +77,23 @@ export default function MessageInput({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [textInput]);
-
+  // base: 0em (0px) - 모든 기기에 적용되는 기본값
+  // sm: 30em (480px) - 작은 모바일 기기
+  // md: 48em (768px) - 태블릿 및 큰 모바일 기기
+  // lg: 62em (992px) - 작은 데스크톱 및 랩톱
+  // xl: 80em (1280px) - 중간 크기 데스크톱
+  // 2xl: 96em (1536px) - 큰 데스크톱
   return (
     <Flex {...chatInputWrapper}>
-      <Card 
-        width="50vw" 
-        borderRadius="15px" 
-        position="fixed" 
+      <Card
+        width={{
+          base: "65vw",
+          md: "600px",
+          lg: "700px",
+          xl: "800px",
+        }}
+        borderRadius="15px"
+        position="fixed"
         bottom={10}
         border="1px solid"
         borderColor={borderColor}
